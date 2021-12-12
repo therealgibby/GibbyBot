@@ -36,13 +36,7 @@ public class AudioCommandService {
     }
 
     public void startAudioConnection(MessageCreateEvent messageCreateEvent) {
-        try {
-            audioConnection = messageCreateEvent.getMessageAuthor().getConnectedVoiceChannel().get().connect().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        audioConnection = messageCreateEvent.getMessageAuthor().getConnectedVoiceChannel().get().connect().join();
         audioConnection.setSelfDeafened(true);
     }
 
@@ -96,7 +90,12 @@ public class AudioCommandService {
 
     public void getQueue(MessageCreateEvent messageCreateEvent) {
         if(queue.getQueue().isEmpty()) {
-            messageCreateEvent.getChannel().sendMessage("Queue is empty");
+            if(player.getPlayingTrack() != null) {
+                messageCreateEvent.getChannel().sendMessage(player.getPlayingTrack().getInfo().title + " is playing with nothing in queue");
+            } else {
+                messageCreateEvent.getChannel().sendMessage("Queue is empty");
+                return;
+            }
             return;
         }
 
@@ -104,6 +103,11 @@ public class AudioCommandService {
         AudioTrack tempTrack;
         int count = 1;
         tracks = queue.getQueue().iterator();
+
+        if(player.getPlayingTrack() != null) {
+            queueMessage = queueMessage + "[♫] "+ (count + ") " + player.getPlayingTrack().getInfo().title + "\n");
+            count++;
+        }
 
         while(tracks.hasNext()) {
             tempTrack = tracks.next();

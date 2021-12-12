@@ -12,9 +12,9 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
     @Autowired
     private AudioCommandService audioService;
 
-    // used to check if audio connection has already been called
+    // used to check if audio connection has already been made
     // this is so that the bot doesn't reconnect to play/add a song to the queue
-    private boolean checker = true;
+    private boolean isConnected = false;
 
     @Override
     public void onMessageCreate(MessageCreateEvent messageCreateEvent) {
@@ -29,16 +29,11 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
 
         if(text.startsWith("!play")) {
 
-            if(checker) {
-                checker = false;
+            if(!isConnected) {
+                isConnected = true;
                 audioService.startAudioConnection(messageCreateEvent);
-
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
+
             audioService.playTrack(messageCreateEvent, text);
         }
 
@@ -47,7 +42,7 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
         // disconnects the bot and clears the queue
         if(text.equalsIgnoreCase("!dc")) {
             audioService.disconnectBot();
-            checker = true;
+            isConnected = false;
         }
 
         // show the songs in the queue
