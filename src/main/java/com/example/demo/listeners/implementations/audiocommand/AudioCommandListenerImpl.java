@@ -33,11 +33,10 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
                 isConnected = true;
                 audioService.startAudioConnection(messageCreateEvent);
             }
-
             audioService.playTrack(messageCreateEvent, text);
         }
 
-        if(!isBotConnected(messageCreateEvent)) return;
+        if(!isConnected) return;
 
         // disconnects the bot and clears the queue
         if(text.equalsIgnoreCase("!dc")) {
@@ -72,10 +71,6 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
                 }
             }
         }
-    }
-
-    private boolean isBotConnected(MessageCreateEvent messageCreateEvent) {
-        return messageCreateEvent.getMessageAuthor().getConnectedVoiceChannel().get().isConnected(833896293863915570L);
     }
 
     public boolean isInteger(String input) {

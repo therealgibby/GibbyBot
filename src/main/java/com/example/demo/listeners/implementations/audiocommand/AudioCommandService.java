@@ -40,6 +40,7 @@ public class AudioCommandService {
         audioConnection.setSelfDeafened(true);
     }
 
+    // text is the user input (ex. "!play youtube.com/video" or "!play Song Name")
     public void playTrack(MessageCreateEvent messageCreateEvent, String text) {
         String search;
 
@@ -105,7 +106,7 @@ public class AudioCommandService {
         tracks = queue.getQueue().iterator();
 
         if(player.getPlayingTrack() != null) {
-            queueMessage = queueMessage + "[♫] "+ (count + ") " + player.getPlayingTrack().getInfo().title + "\n");
+            queueMessage = queueMessage + "[♫] " + player.getPlayingTrack().getInfo().title + "\n";
             count++;
         }
 
