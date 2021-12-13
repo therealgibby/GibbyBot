@@ -28,6 +28,10 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
         String text = messageCreateEvent.getMessageContent();
 
         if(text.startsWith("!play")) {
+            if(text.equalsIgnoreCase("!play")) {
+                audioService.unpauseTrack(messageCreateEvent);
+                return;
+            }
 
             if(!isConnected) {
                 isConnected = true;
@@ -39,13 +43,13 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
         if(!isConnected) return;
 
         // disconnects the bot and clears the queue
-        if(text.equalsIgnoreCase("!dc")) {
+        if(text.equalsIgnoreCase("!dc") || text.equalsIgnoreCase("!disconnect")) {
             audioService.disconnectBot();
             isConnected = false;
         }
 
         // show the songs in the queue
-        if(text.equalsIgnoreCase("!q")) {
+        if(text.equalsIgnoreCase("!q") || text.equalsIgnoreCase("!queue")) {
             audioService.getQueue(messageCreateEvent);
         }
 
@@ -55,8 +59,12 @@ public class AudioCommandListenerImpl implements AudioCommandListener {
         }
 
         // skip a song
-        if(text.equalsIgnoreCase("!s")) {
+        if(text.equalsIgnoreCase("!s") || text.equalsIgnoreCase("!skip")) {
             audioService.skipTrack();
+        }
+
+        if(text.equalsIgnoreCase("!pause")) {
+            audioService.pauseTrack(messageCreateEvent);
         }
 
         // seeks the song

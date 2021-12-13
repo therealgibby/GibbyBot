@@ -112,7 +112,7 @@ public class AudioCommandService {
 
         while(tracks.hasNext()) {
             tempTrack = tracks.next();
-            queueMessage = queueMessage + (count + ") " + tempTrack.getInfo().title + "\n");
+            queueMessage = queueMessage + (count + ")  " + tempTrack.getInfo().title + "\n");
             count++;
         }
         messageCreateEvent.getChannel().sendMessage(queueMessage + "```");
@@ -149,6 +149,21 @@ public class AudioCommandService {
             }
         } else {
             messageCreateEvent.getChannel().sendMessage("Track is not seekable");
+        }
+    }
+
+    public void pauseTrack(MessageCreateEvent event) {
+        if(player.isPaused()) {
+            return;
+        }
+        player.setPaused(true);
+        event.getChannel().sendMessage("Track paused.");
+    }
+
+    public void unpauseTrack(MessageCreateEvent event) {
+        if(player.isPaused()) {
+            player.setPaused(false);
+            event.getChannel().sendMessage("Track unpaused.");
         }
     }
 }
